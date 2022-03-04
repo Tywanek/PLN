@@ -1,14 +1,15 @@
 package com.radlab.pln
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView.OnEditorActionListener
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.radlab.pln.databinding.FragmentFirstBinding
+
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -26,19 +27,30 @@ class EuroFragment : Fragment() {
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.response.observe(viewLifecycleOwner, Observer {
+        viewModel.response.observe(viewLifecycleOwner) {
             binding.textviewFirst.text = it
-        })
-        binding.buttonFirst.setOnClickListener {
-            viewModel.euroToPLN()
-            //  findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
+
+        viewModel.responseEUR.observe(viewLifecycleOwner) {
+            binding.textviewEur.text = it
+        }
+
+        viewModel.responsePLN.observe(viewLifecycleOwner) {
+            binding.textviewPln.text = it
+        }
+
+        binding.editTextFirst.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                viewModel.calculate(binding.editTextFirst.text.toString())
+                return@OnEditorActionListener true
+            }
+            false
+        })
     }
 
     override fun onDestroyView() {
