@@ -10,6 +10,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.math.roundToInt
 
 
 class EuroFragmentViewModel : ViewModel() {
@@ -27,8 +28,8 @@ class EuroFragmentViewModel : ViewModel() {
 
     fun calculate(value: String) {
         euroRate.let {
-            _responsePLN.postValue((value.toDouble().times(it.mid)).toString())
-            _responseEUR.postValue((value.toDouble().div(it.mid).toString()))
+            _responsePLN.postValue("PLN ${value.toDouble().times(it.mid).roundToInt()}")
+            _responseEUR.postValue("EUR ${(value.toDouble().div(it.mid).roundToInt())}")
         }
     }
 
